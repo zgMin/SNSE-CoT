@@ -11,7 +11,7 @@ import argparse
 import random
 from transformers import T5Tokenizer, DataCollatorForSeq2Seq, Seq2SeqTrainingArguments, Seq2SeqTrainer, T5ForConditionalGeneration
 from trainer import Seq2SeqTrainer
-from model import T5ForConditionalGeneration, T5ForMultimodalGeneration,T5ForMultimodalGenerationC
+from model import T5ForConditionalGeneration, T5ForMultimodalGeneration
 from utils_data import img_shape, load_data_std, load_data_img, ScienceQADatasetStd, ScienceQADatasetImg,Softneg
 from utils_prompt import *
 from utils_evaluate import get_scores
