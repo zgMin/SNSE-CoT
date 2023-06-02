@@ -1,4 +1,4 @@
-# mm-cot-cl_enhance
+# Enhanced CoT Generation Method with Soft Negative Samples
 
 To be continued
 
