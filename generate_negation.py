@@ -18,15 +18,11 @@ unit_words = ["second", 'minute', "hour",'°C','°F','mm','cm','m','km', 'l', 'm
 # 方位变换，方向或地图理解
 # 单位换算变换，单位理解，不同度量的比较。
 
-# ！！！文本中进行选项文字的替换，增强理解，或许对下述问题均有帮助
-# 反义词？具有比较性质的词
-# 字母表常识比较这种如何解决？
-# 感觉字母表常识主要是字母大小，问题在于CoT不够细致，如果是这样来看的话，我觉得考虑continuous prompt也有效果（问题在于CoT可能不是全局最优的，或者他干脆就是错的）。
-# 地理位置变换，主要是地图理解，略难，替换可以考虑选项，但是更偏向常识理解
 
-# 文本过长，能处理的点太多，怎么选？因为E更重要，我觉得处理E就好，但E还是很长，
+
+# 文本过长，能处理的点太多，怎么选？E更重要
 # 一个sample尽可能的少变化，这样sample与golden的分布更近，
-# 但也有个问题是，可能没办法变化到关键位置，也可能变换后意思相差不大，比如A与B相等，B与A相等没区别
+
 def get_index(ref, key):
     return [i for i,val in enumerate(ref) if val==key]
 def get_num(n):
@@ -212,7 +208,7 @@ def convert_text_no_random(solution, type = 0, choice = None, answer = None, par
     return sentence_negation
 
 
-def convert_text(solution, type = 0, choice = None, answer = None, parser=parser, cache = None ):
+def convert_text(solution, type = 0, choice = None, answer = None, parser=parser, cache = None, l = 1 ):
     '''
     :param parser: parser
     :param solution: sentence
@@ -238,18 +234,35 @@ def convert_text(solution, type = 0, choice = None, answer = None, parser=parser
     if type == 0:
         if "not" in tokens:     # 否定-》肯定
             indexs = get_index(tokens, "not")
-            index = random.randint(0,len(indexs)-1)
-            index = indexs[index]
-            del tokens[index]
+            if l == -1:   # 全部替换
+                for i in range(len(indexs)):
+                    index = indexs[i]
+                    del tokens[index]
+            else:
+                ltmp = max(l,len(indexs))
+                index =random.sample(indexs, ltmp)
+                # index = random.randint(0,len(indexs)-1)
+                # index = indexs[index]
+                del tokens[index]
             sentence_negation = " ".join(tokens)
             return sentence_negation
         if "n't" in tokens:
             indexs = get_index(tokens, "n't")
-            index = random.randint(0, len(indexs)-1)
-            index = indexs[index]
-            if lemmas[index-1] != 'be':
-                tokens[index-1] = lemmas[index-1]
-            del tokens[index]
+            if l == -1:
+                for i in range(len(indexs)):
+                    index = indexs[i]
+                    if lemmas[index - 1] != 'be':
+                        tokens[index - 1] = lemmas[index - 1]
+                    del tokens[index]
+            else:
+                ltmp = max(l, len(indexs))
+                index = random.sample(indexs, ltmp)
+                # index = random.randint(0, len(indexs)-1)
+                # index = indexs[index]
+                for i in index:
+                    if lemmas[i-1] != 'be':
+                        tokens[i-1] = lemmas[i-1]
+                    del tokens[i]
             sentence_negation = " ".join(tokens)
             return sentence_negation
 
@@ -268,9 +281,16 @@ def convert_text(solution, type = 0, choice = None, answer = None, parser=parser
             for i, dep in enumerate(deps):
                 if dep == "aux" or dep == "auxpass":
                     indexs.append(i)
-            index = random.randint(0, len(indexs)-1)
-            index = indexs[index]
-            tokens[index] += " not"
+            if l == -1:
+                for i in range(len(indexs)):
+                    index = indexs[i]
+                    tokens[index] += " not"
+            else:
+                ltmp = max(l, len(indexs))
+                index = random.sample(indexs, ltmp)
+                # index = random.randint(0, len(indexs)-1)
+                # index = indexs[index]
+                tokens[index] += " not"
         elif flag == 2:
             index = deps.index("ROOT")
             if tokens[index].lower() in special_words:
@@ -289,12 +309,23 @@ def convert_text(solution, type = 0, choice = None, answer = None, parser=parser
     elif type == 1:         # 数字变换
         if "nummod" in deps:
             indexs = get_index(deps, "nummod")
-            index = random.randint(0, len(indexs)-1)
-            index = indexs[index]
-            tmp_num = get_num(n = len(tokens[index]))
-            while tmp_num == tokens[index]:
-                tmp_num = get_num(n=len(tokens[index]))
-            tokens[index] = tmp_num  # 随机替换一个等长的数字
+            if l == -1:
+                for i in range(len(indexs)):
+                    index = indexs[i]
+                    tmp_num = get_num(n=len(tokens[index]))
+                    while tmp_num == tokens[index]:
+                        tmp_num = get_num(n=len(tokens[index]))
+                    tokens[index] = tmp_num  # 随机替换一个等长的数字
+            else:
+                # index = random.randint(0, len(indexs)-1)
+                # index = indexs[index]
+                ltmp = max(l, len(indexs))
+                index = random.sample(indexs, ltmp)
+                for i in index:
+                    tmp_num = get_num(n = len(tokens[i]))
+                    while tmp_num == tokens[i]:
+                        tmp_num = get_num(n=len(tokens[i]))
+                    tokens[i] = tmp_num  # 随机替换一个等长的数字
             ok = True
     elif type == 2:     # 方位变换
         indexs = []
@@ -302,9 +333,16 @@ def convert_text(solution, type = 0, choice = None, answer = None, parser=parser
             if token in position_words:
                 indexs.append(i)
         if len(indexs) > 0:
-            index = random.randint(0, len(indexs)-1)
-            index = indexs[index]
-            tokens[index] = convert_position_words[position_words.index(tokens[index])]
+            if l == -1:
+                for i in range(len(indexs)):
+                    index = indexs[i]
+                    tokens[index] = convert_position_words[position_words.index(tokens[index])]
+            else:
+                ltmp = max(l, len(indexs))
+                index = random.sample(indexs, ltmp)
+                # index = random.randint(0, len(indexs)-1)
+                # index = indexs[index]
+                tokens[index] = convert_position_words[position_words.index(tokens[index])]
             ok = True
     elif type == 3:     # 单位变换
         indexs = []
@@ -312,9 +350,16 @@ def convert_text(solution, type = 0, choice = None, answer = None, parser=parser
             if lemmas[i] in unit_words:
                 indexs.append(i)
         if len(indexs) > 0:
-            index = random.randint(0, len(indexs)-1)
-            index = indexs[index]
-            tokens[index] = unit_words[convert_unit_index(unit_words.index(lemmas[index]))]
+            if l == -1:
+                for i in range(len(indexs)):
+                    index = indexs[i]
+                    tokens[index] = unit_words[convert_unit_index(unit_words.index(lemmas[index]))]
+            else:
+                ltmp = max(l, len(indexs))
+                index = random.sample(indexs, ltmp)
+                # index = random.randint(0, len(indexs)-1)
+                # index = indexs[index]
+                tokens[index] = unit_words[convert_unit_index(unit_words.index(lemmas[index]))]
             ok = True
     elif type == 4:     # 选项替换
         pattern = "\([A-Z]\)"
@@ -348,9 +393,15 @@ def convert_text(solution, type = 0, choice = None, answer = None, parser=parser
                     'lemmas':lemmas,
                 }
                 return convert_text(solution, parser=parser,cache=cache)
-            index = random.randint(0, len(indexs)-1)
-            index = indexs[index]
-            s = s[index:].replace(answer_content, choice_content, 1)
+            if l == -1:
+                s.replace(answer_content, choice_content)
+            else:
+                ltmp = max(l, len(indexs))
+                index = random.sample(indexs, ltmp)
+                # index = random.randint(0, len(indexs)-1)
+                # index = indexs[index]
+                for i in index:
+                    s = s[:i]+s[i:].replace(answer_content, choice_content, 1)
             return s
     elif type==5:
         # 因为存在句法解析，一起搞可能会快一些
