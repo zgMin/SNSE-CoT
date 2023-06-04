@@ -81,7 +81,7 @@ def parse_args():
     parser.add_argument('--bs', type=int, default=16)
     parser.add_argument('--alpha', type=float, default=0.1)
     parser.add_argument('--beta', type=float, default=0.3)
-    parser.add_argument('--lambda_', type=float, default=1)
+    parser.add_argument('--lambda_', type=float, default=0.1)
     parser.add_argument('--input_len', type=int, default=512)
     parser.add_argument('--output_len', type=int, default=64)
     parser.add_argument('--eval_bs', type=int, default=16)
@@ -144,6 +144,7 @@ def T5Trainer(
         else:
             output_file = os.path.join('soft_negations', "texts.json")
             output_data = json.load(open(output_file))["negs"]
+        # exit(0)
     if args.evaluate_dir is not None:
         save_dir = args.evaluate_dir
     else:
