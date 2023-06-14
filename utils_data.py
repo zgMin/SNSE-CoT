@@ -281,7 +281,8 @@ class ScienceQADatasetImg(Dataset):
 
             negation_ids = []
             tmp = random.randint(0, self.epoch - 1)
-            negation_text = self.soft_negations[index][tmp * 5:tmp * 5 + 4]
+            negation_text = self.soft_negations[index][tmp * 5:tmp * 5 + 5]
+            # negation_text = self.soft_negations[index][5: 5 + 5]
             for text in negation_text:
                 negation_ids.append(self.tokenizer.batch_encode_plus(
                     [text],
