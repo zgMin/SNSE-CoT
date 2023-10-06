@@ -6,7 +6,7 @@ To be continued
 
 ## Datasets
 
-Download the dataset from the following repository:
+[^_^]:Download the dataset from the following repository:
 
 ```
 https://github.com/lupantech/ScienceQA/tree/main/data
