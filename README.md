@@ -1,4 +1,4 @@
-# 1111
+# Enhancing Semantics in Multimodal Chain of Thought via Soft Negative Sampling
 
 To be continued
 
