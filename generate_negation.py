@@ -31,7 +31,10 @@ def get_num(n):
         ret:random n num
     """
     ret = ""
-    for i in range(n):
+    num = random.randint(1, 9)
+    s = str(random.choice([num]))
+    ret += s
+    for i in range(1,n):
         num = random.randint(0, 9)
         s = str(random.choice([num]))
         ret += s
