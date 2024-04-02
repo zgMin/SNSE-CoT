@@ -2,6 +2,8 @@
 
 ![](figure_1.png)
 
+Considering the same example in figure, an appropriate rationale is, *The **north** pole of one magnet is closest to the south of the other magnet*. However, simply modifying one word can make the rationale unreasonable, that is, *The **south** pole of one magnet is closest to the south of the other magnet*. For the decoder of generation, this inappropriate rationale can achieve an extremely low negative log-likelihood but will finally mislead the answer inference. 
+
 ## Requirements
 
 Local python environment is 3.8, CUDA is 12.
