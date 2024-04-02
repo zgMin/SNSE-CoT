@@ -4,6 +4,16 @@ The code for the core part is provided here. To be continued.
 
 ## Requirements
 
+Local python environment is 3.8, CUDA is 12.
+
+Install all required python dependencies:
+''' bash
+pip install -r requirements.txt
+python
+import nltk
+nltk.download('punkt')
+'''
+
 ## Datasets
 
 Download the dataset from the following repository:
