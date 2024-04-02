@@ -1,6 +1,6 @@
 # Enhancing Semantics in Multimodal Chain of Thought via Soft Negative Sampling
 
-The code for the core part is provided here. To be continued.
+![](figure_1.png)
 
 ## Requirements
 
