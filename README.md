@@ -85,12 +85,15 @@ CUDA_VISIBLE_DEVICES=0 python main.py \
 ## Citing SNSE-CoT
 
 ```
-@inproceedings{zheng2024snsecot,
-  title={Enhancing Semantics in Multimodal Chain of Thought via Soft Negative Sampling},
-  author={Zheng, Guangmin and Wang, Jin and Zhou, Xiaobing and Zhang, Xuejie},
-  booktitle={LREC-COLING 2024},
-  pages={}
-  year={2024}
+@inproceedings{zheng-etal-2024-enhancing-semantics,
+    title = "Enhancing Semantics in Multimodal Chain of Thought via Soft Negative Sampling",
+    author = "Zheng, Guangmin  and
+      Wang, Jin  and
+      Zhou, Xiaobing  and
+      Zhang, Xuejie",
+    booktitle = "Proceedings of the 2024 Joint International Conference on Computational Linguistics, Language Resources and Evaluation (LREC-COLING 2024)",
+    year = "2024",
+    pages = "6059--6076",
 }
 ```
 
